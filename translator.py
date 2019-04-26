@@ -1,12 +1,13 @@
 import audio
 import executor
 
+import os
+
 
 class Translator:
     def __init__(self):
         self.audio_commands = audio.Audio(None).commands
         self.executor_commands = executor.Executor().commands
-        self.
 
     def _translate(self, data, from_commands, to_commands):
         out = []
@@ -19,22 +20,27 @@ class Translator:
 
         return out
 
-    def executor_to_audio(self, executor_data: list):
-        out = []
-        for command in executor_data:
-            if command not in self.executor_commands:
-                continue
-            executor_index = self.executor_commands.index(command)
-            audio_command = self.audio_commands[executor_index]
-            out.append(audio_command)
 
-        return out
+    def executor_to_audio(self, executor_data: list):
+        return self._translate(executor_data, self.executor_commands, self.audio_commands)
 
     def audio_to_executor(self, audio_data: list):
+        return self._translate(audio_data, self.audio_commands, self.executor_commands)
+
+    def text_to_executor(self, text: str) -> list:
         out = []
-        for command in audio_data:
-            audio_index = self.audio_commands.index(command)
-            executor_command = self.executor_commands[audio_index]
-            out.append(executor_command)
+        pointer = 0
+
+        for char in text:
+            c = ord(char)
+            difference = c-pointer
+            if difference > 0:
+                out+=([self.executor_commands[6]]*abs(difference))
+            elif difference < 0:
+                out+=([self.executor_commands[7]] * abs(difference))
+
+            pointer+=difference
+
+            out.append(self.executor_commands[0])
 
         return out

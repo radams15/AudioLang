@@ -8,7 +8,6 @@ class Audio:
     def read(self):
         out_raw = ""
         with wave.open(self.file, 'rb') as w:
-            print(w.getnchannels(), w.getsampwidth(), w.getframerate(), w.getnframes())
             for i in range(w.getnframes()):
                 ### read 1 frame and the position will updated ###
                 frame = w.readframes(1)
