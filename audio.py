@@ -6,7 +6,7 @@ class Audio:
         self.commands = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000]
 
     def read(self):
-        out = []
+        out_raw = ""
         with wave.open(self.file, 'rb') as w:
             print(w.getnchannels(), w.getsampwidth(), w.getframerate(), w.getnframes())
             for i in range(w.getnframes()):
@@ -15,7 +15,12 @@ class Audio:
 
                 f1 = frame.decode()
 
-                out.append(ord(f1))
+                out_raw+=f1
+
+        out=[]
+        for byte in out_raw.split("0x"):
+            if not byte: continue
+            out.append(int(byte, 16))
 
         return out
 

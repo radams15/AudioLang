@@ -1,8 +1,9 @@
+import sys
 
 class Executor:
     def __init__(self):
         self.max_data_size = 255
-        self.mem_siz = 100
+        self.mem_siz = 100000
         self.commands = [".", ",", "[", "]", "<", ">", "+", "-"] #out, in, loop start, loop end, pointer decrement, pointer increment, cell increment, cell decrement
 
     def _build_brace_map(self, code: str) -> dict:
@@ -18,12 +19,12 @@ class Executor:
         return brace_map
 
     def _out(self, data: str):
-        #sys.stdout.write(data)
-        print(data, end="")
+        return sys.stdout.write(data)
+        #print(data, end="")
 
     def _in(self, amount):
-        # sys.stdin.read(amount)
-        return input()[amount]
+        return sys.stdin.read(amount)
+        #return input()[amount]
 
 
     def _interpret(self, data: list, debug):
