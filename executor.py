@@ -87,3 +87,4 @@ class Executor:
 
     def execute(self, data, debug=False):
         self._interpret(data, debug=debug)
+        print()

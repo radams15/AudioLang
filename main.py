@@ -1,3 +1,6 @@
+from sys import argv
+import os.path as path
+
 import translator
 import audio
 import executor
@@ -27,4 +30,17 @@ if __name__ == '__main__':
 
     #text = t.text_to_executor(open("text.txt", "r").read())
     #write_executable_code(text, "text.wav")
-    execute_file("text.wav")
+
+    if argv[1] == "-e":
+        code = argv[2]
+        out_file = argv[3]
+        write_executable_code(code, out_file)
+    elif argv[1] == "-et":
+        text = argv[2]
+        out_file = argv[3]
+        executor_text = t.text_to_executor(text)
+        write_executable_code(executor_text, out_file)
+
+    elif len(argv) == 2:
+        if path.exists(argv[1]):
+            execute_file(argv[1])
