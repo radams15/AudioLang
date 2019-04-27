@@ -1,13 +1,10 @@
 import audio
 import executor
 
-import os
-
-
 class Translator:
     def __init__(self):
-        self.audio_commands = audio.Audio(None).commands
-        self.executor_commands = executor.Executor().commands
+        self.audio_commands = audio.commands
+        self.executor_commands = executor.commands
 
     def _translate(self, data, from_commands, to_commands):
         out = []

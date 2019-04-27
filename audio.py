@@ -1,15 +1,16 @@
 import wave
 
+commands = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000]
+
 class Audio:
     def __init__(self, file):
         self.file = file
-        self.commands = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000]
+        self.commands = commands
 
     def read(self):
         out_raw = ""
         with wave.open(self.file, 'rb') as w:
             for i in range(w.getnframes()):
-                ### read 1 frame and the position will updated ###
                 frame = w.readframes(1)
 
                 f1 = frame.decode()
