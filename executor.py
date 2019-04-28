@@ -1,104 +1,55 @@
-import ctypes
 import sys
 
-commands = [".", ",", "[", "]", "<", ">", "+", "-"]
-
-class Executor1:
-    def __init__(self):
-        self.commands = commands
-        self.executor = ctypes.CDLL("./libexecutor.so")
-
-    def execute(self, data):
-
-        code = "".join(data)
-        str_code = ctypes.create_string_buffer(str.encode(code))
-        self.executor.interpret(str_code)
+import translator
 
 class Executor:
     def __init__(self):
-        self.max_data_size = 255
-        self.mem_siz = 100000
-        self.commands = [".", ",", "[", "]", "<", ">", "+", "-"] #out, in, loop start, loop end, pointer decrement, pointer increment, cell increment, cell decrement
+        self.commands = translator.executor_commands
 
-    def _build_brace_map(self, code: str) -> dict:
-        temp_brace_stack, brace_map = [], {}
+    def _in(self):
+        return sys.stdin.read(1)
 
-        for position, command in enumerate(code):
-            if command == "[": temp_brace_stack.append(position)
-            if command == "]":
-                start = temp_brace_stack.pop()
-                brace_map[start] = position
-                brace_map[position] = start
-        del temp_brace_stack
-        return brace_map
+    def execute(self, code):
+        code = self.cleanup(list(code))
+        bracemap = self.buildbracemap(code)
 
-    def _out(self, data: str):
-        return sys.stdout.write(data)
-        #print(data, end="")
+        cells, codeptr, cellptr = [0], 0, 0
 
-    def _in(self, amount):
-        return sys.stdin.read(amount)
-        #return input()[amount]
-
-
-    def _interpret(self, data: list, debug):
-        code_map = []
-
-        for op in data:
-            if op in self.commands:
-                code_map.append(op)
-
-        brace_map = self._build_brace_map(''.join(code_map))
-
-        if debug:
-            print(f"Build Bracemap : {brace_map}")
-
-        cell_map = [0] * self.mem_siz
-        operation_ptr = 0
-        cell_ptr = 0
-
-        while operation_ptr < len(code_map):
-            command = code_map[operation_ptr]
-
-            if debug:
-                print(f"Command:  {command}")
+        while codeptr < len(code):
+            command = code[codeptr]
 
             if command == self.commands[5]:
-                cell_ptr += 1
+                cellptr += 1
+                if cellptr == len(cells): cells.append(0)
 
-            elif command == self.commands[4]:
-                cell_ptr -= 1
+            if command == self.commands[4]:
+                cellptr = 0 if cellptr <= 0 else cellptr - 1
 
-            elif command == self.commands[6]:
-                cell_map[cell_ptr] += 1
+            if command == self.commands[6]:
+                cells[cellptr] = cells[cellptr] + 1 if cells[cellptr] < 255 else 0
 
-                if cell_map[cell_ptr] > self.max_data_size:
-                    cell_map[cell_ptr] = 0
+            if command == self.commands[7]:
+                cells[cellptr] = cells[cellptr] - 1 if cells[cellptr] > 0 else 255
 
-            elif command == self.commands[7]:
-                cell_map[cell_ptr] -= 1
+            if command == self.commands[2] and cells[cellptr] == 0: codeptr = bracemap[codeptr]
+            if command == self.commands[3] and cells[cellptr] != 0: codeptr = bracemap[codeptr]
+            if command == self.commands[0]: sys.stdout.write(chr(cells[cellptr]))
+            if command == self.commands[1]: cells[cellptr] = ord(self._in())
 
-                if cell_map[cell_ptr] < 0:
-                    cell_map[cell_ptr] = self.max_data_size
+            codeptr += 1
 
-            elif command == self.commands[0]:
-                self._out(chr(cell_map[cell_ptr]))
+    def cleanup(self, code):
+        #return ''.join(filter(lambda x: x in self.commands, code))
+        return list(filter(lambda x: x in self.commands, code))
 
-            elif command == self.commands[1]:
-                cell_map[cell_ptr] = ord(self._in(1))
+    def buildbracemap(self, code):
+        temp_bracestack, bracemap = [], {}
 
-            elif command == self.commands[2] and cell_map[cell_ptr] == 0:
-                operation_ptr = brace_map[operation_ptr]
+        for position, command in enumerate(code):
+            if command == self.commands[2]: temp_bracestack.append(position)
+            if command == self.commands[3]:
+                start = temp_bracestack.pop()
+                bracemap[start] = position
+                bracemap[position] = start
 
-            elif command == self.commands[3] and cell_map[cell_ptr] != 0:
-                operation_ptr = brace_map[operation_ptr]
-
-            operation_ptr += 1
-
-        if debug:
-            print(f"Final Memory: {cell_map}")
-            print(cell_map[0:14])
-
-    def execute(self, data, debug=False):
-        self._interpret(data, debug=debug)
-        print()
+        return bracemap

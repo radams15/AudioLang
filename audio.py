@@ -1,11 +1,11 @@
 import wave
-
-commands = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000]
+import translator
 
 class Audio:
     def __init__(self, file):
         self.file = file
-        self.commands = commands
+        self.commands = translator.audio_commands
+        self.framerate = 8000 # max freq (I Think)
 
     def read(self):
         out_raw = ""
