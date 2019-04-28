@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from sys import argv
 import os.path as path
 
@@ -14,6 +16,10 @@ def write_executable_code(code, file):
 
     audio_file.write(audio_data)
 
+def write_bf(bf_code, file):
+    code = t.bf_to_executor(bf_code)
+    write_executable_code(code, file)
+
 def execute_file(file):
     audio_file = audio.Audio(file)
     e = executor.Executor()
@@ -23,19 +29,32 @@ def execute_file(file):
 
     e.execute(executable_data)
 
+help = """\
+AudioLang!
+
+Usage:
+    -e  [CODE] [OUT_FILE]     Write Pure Executor Script
+    -eb [CODE] [OUT FILE]     Write Brainf*ck Script
+    -et [TEXT] [OUT FILE]     Write Executor Script To Output Text
+    (No Args)   [IN FILE]     Execute File
+"""
+
 
 if __name__ == '__main__':
     #calculator_bf = "+>+>+>+>>>,.>++++[<---------->-]<-------[-<[>>+<<-]>>[<<++++++++++>>-]<[<+>-],.>++++[<---------->-]<--[>+<-]>[<<<<<<<->>>>>>>-[<<<<<<->>>>>>--[<<<<<->>>>>--[<<<<<<<+>+>+>>>>>[<+>-]]]]]<]>,.>++++[<---------->-]<-------[-<[>>+<<-]>>[<<++++++++++>>-]<[<+>-],.>++++[<---------->-]<-------[>+>+<<-]>>[<<+>>-]<-[-[-[-[-[-[-[-[-[-[<[-]>[-]]]]]]]]]]]<]<<<<<<<[->->->->>[>>+<<-]>[>[<<+>>>+<-]>[<+>-]<<-]>[-]<<<<<<<]>[->->->>>[<+>-]<<<<<]>[->->+>>[>+<-]>>+<[>-<[<+>-]]>[-<<<<->[>+<-]>>>]<<<[->-[>+<-]>>+<[>-<[<+>-]]>[-<<<<->[>+<-]>>>]<<<]>[<+>-]<<<<]>[->>>>>+[-<<<[>>>+>+<<<<-]>>>[<<<+>>>-]<<[>>+>>+<<<<-]>>[<<+>>-]>[->->>+<<[>+<-]>[>-<[<+>-]]>[-<<<<+<+<<[-]>>>>[<<<<+>>>>-]>>>]<<<]>[-]<<]<<[-]<[>+<-]>>[<<+>>-]<<<<]>>>[>>+[<<[>>>+>+<<<<-]>>>>[<<<<+>>>>-]+<[-[-[-[-[-[-[-[-[-[>-<<<<---------->+>>[-]]]]]]]]]]]>[->[>]>++++[<++++++++++>-]<++++++++[<]<<<<[>>>>>[>]<+[<]<<<<-]>>-<[>+<[<+>-]]>>>]<<]>>>[>]>++++[<++++++++++>-]<++++++>>++++[<++++++++++>-]<++++++>>++++[<++++++++++>-]<++++++[<]<<<<]>+[<<[>>>+>+<<<<-]>>>>[<<<<+>>>>-]+<[-[-[-[-[-[-[-[-[-[>-<<<<---------->+>>[-]]]]]]]]]]]>[->>[>]>++++[<++++++++++>-]<++++++++[<]<<<<<[>>>>>>[>]<+[<]<<<<<-]>>-<[>+<[<+>-]]>>>]<<]<<<[->>>>>>>[>]>++++[<++++++++++>-]<+++++[<]<<<<<<]>>>>>>>[>]<[.<]"
 
-    if argv[1] == "-e":
+    if len(argv) < 2:
+        print(help)
+
+    elif argv[1] == "-e":
         code = argv[2]
         out_file = argv[3]
         write_executable_code(code, out_file)
 
     elif argv[1] == "-eb":
-        code = t.bf_to_executor(argv[2])
+        code = argv[2]
         out_file = argv[3]
-        write_executable_code(code, out_file)
+        write_bf(code, out_file)
 
     elif argv[1] == "-et":
         text = argv[2]

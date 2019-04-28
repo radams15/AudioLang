@@ -2,7 +2,7 @@ from audio import Audio
 
 #out, in, loop start, loop end, pointer decrement, pointer increment, cell increment, cell decrement
 bf_commands = [".", ",", "[", "]", "<", ">", "+", "-"]
-executor_commands = [bin(ord(b)) for b in bf_commands]
+executor_commands = ["OUT", "IN", "LS", "LE", "PI", "PD", "CI", "CD"]#[bin(ord(b)) for b in bf_commands]
 audio_commands = [1145, 5246, 7431, 6659, 5897, 3768, 3479, 7461] #[int(b, 2)*2 for b in executor_commands]
 
 #executor_commands = bf_commands

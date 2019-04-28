@@ -37,6 +37,7 @@ class Executor:
             if command == self.commands[1]: cells[cellptr] = ord(self._in())
 
             codeptr += 1
+        print()
 
     def cleanup(self, code):
         #return ''.join(filter(lambda x: x in self.commands, code))
