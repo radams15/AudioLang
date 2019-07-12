@@ -24,13 +24,13 @@ class Audio:
 
         return out
 
-    def write(self, data):
-        with wave.open(self.file, 'wb') as w:
-            w.setnchannels(1)
-            w.setsampwidth(1)
-            w.setframerate(8000)
-            w.setnframes(len(data))
+    def write_executor(self, data):
+        with wave.open(self.file, 'wb') as wav:
+            wav.setnchannels(1)
+            wav.setsampwidth(1)
+            wav.setframerate(8000)
+            wav.setnframes(len(data))
 
             for d in data:
                 encoded = hex(d).encode()
-                w.writeframes(encoded)
+                wav.writeframes(encoded)

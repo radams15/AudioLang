@@ -40,7 +40,6 @@ class Executor:
         print()
 
     def cleanup(self, code):
-        #return ''.join(filter(lambda x: x in self.commands, code))
         return list(filter(lambda x: x in self.commands, code))
 
     def buildbracemap(self, code):

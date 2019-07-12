@@ -14,7 +14,7 @@ def write_executable_code(code, file):
 
     audio_data = t.executor_to_audio(list(code))
 
-    audio_file.write(audio_data)
+    audio_file.write_executor(audio_data)
 
 def write_bf(bf_code, file):
     code = t.bf_to_executor(bf_code)
@@ -29,7 +29,7 @@ def execute_file(file):
 
     e.execute(executable_data)
 
-help = """\
+help_message = """\
 AudioLang!
 
 Usage:
@@ -42,7 +42,7 @@ Usage:
 
 if __name__ == '__main__':
     if len(argv) < 2:
-        print(help)
+        print(help_message)
 
     elif argv[1] == "-e":
         code = argv[2]
