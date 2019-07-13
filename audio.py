@@ -24,7 +24,7 @@ class Audio:
 
         return out
 
-    def write_executor(self, data):
+    def write(self, data):
         with wave.open(self.file, 'wb') as wav:
             wav.setnchannels(1)
             wav.setsampwidth(1)

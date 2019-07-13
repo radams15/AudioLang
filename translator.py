@@ -1,12 +1,10 @@
-from audio import Audio
-
 #out, in, loop start, loop end, pointer decrement, pointer increment, cell increment, cell decrement
 bf_commands = [".", ",", "[", "]", "<", ">", "+", "-"]
-executor_commands = ["OUT", "IN", "LS", "LE", "PI", "PD", "CI", "CD"]#[bin(ord(b)) for b in bf_commands]
-audio_commands = [1145, 5246, 7431, 6659, 5897, 3768, 3479, 7461] #[int(b, 2)*2 for b in executor_commands]
+executor_commands = ["OUT", "IN", "LS", "LE", "PI", "PD", "CI", "CD"]
+audio_commands = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000]
 
-#executor_commands = bf_commands
-#audio_commands = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000]
+python_startcode = 12345
+executor_startcode = 1213
 
 class Translator:
     def __init__(self):
@@ -24,17 +22,34 @@ class Translator:
 
         return out
 
+    def python_to_audio(self, python):
+        out = [python_startcode]
+        for char in python:
+            out.append(ord(char))
+        return out
+
+
+    def audio_to_python(self, audio: list):
+        if audio[0] == python_startcode:
+            del audio[0]
+        code = "".join([chr(x) for x in audio])
+        return code
+
     def bf_to_executor(self, bf_data):
-        return self._translate(bf_data, bf_commands, executor_commands)
+        return [executor_startcode] + self._translate(bf_data, bf_commands, executor_commands)
 
     def executor_to_bf(self, executor_data):
+        if executor_data[0] == executor_startcode:
+            del executor_data[0]
         return self._translate(executor_data, executor_commands, bf_commands)
 
     def executor_to_audio(self, executor_data: list):
+        if executor_data[0] == executor_startcode:
+            del executor_data[0]
         return self._translate(executor_data, self.executor_commands, self.audio_commands)
 
     def audio_to_executor(self, audio_data: list):
-        return self._translate(audio_data, self.audio_commands, self.executor_commands)
+        return [executor_startcode] + self._translate(audio_data, self.audio_commands, self.executor_commands)
 
     def text_to_executor(self, text: str) -> list:
         out = []
